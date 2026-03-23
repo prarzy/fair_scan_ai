@@ -1,0 +1,21 @@
+# Lessons
+
+- Use `plan.md` workflow first: write the implementation checklist before coding.
+- Keep all implementation and tracking updates inside the active repo folder (`fair_scan_ai`) so commits are push-ready.
+- For OCR parsing, avoid clock/score collisions by resolving `clock` first and excluding it from score candidates.
+- If Flutter test load fails with "Does not exist", verify test path typos first (e.g., `ocr_service_test.dart` vs `ocr_seervice_test.dart`).
+- Keep parser tests focused on extraction behavior (score, clock, overlay) so regex tuning is safe and fast.
+- Treat repeated `file_picker` platform warnings as non-blocking unless tests or analyze actually fail.
+- For Part 1 completion, unit tests are necessary but not sufficient: static real-image runs must also be documented.
+- On Windows, Flutter plugin builds require symlink support; enable Developer Mode before running `flutter run` targets that use plugins.
+- For desktop runners, call `WidgetsFlutterBinding.ensureInitialized()` and load `.env` before invoking plugin-backed services.
+- Cloud Vision `TEXT_DETECTION` may return text in `textAnnotations[0].description` when `fullTextAnnotation` is absent; parser should handle both.
+- A valid Cloud Vision API key is not sufficient by itself; project billing must be enabled or Vision calls fail with HTTP 403.
+- OCR parser must handle three score patterns: (1) dash-separated like "2 - 1", (2) space-separated like "0 0", (3) TEAM SCORE TEAM SCORE like "NOP 107 LAC 124". Prioritize in that order.
+- Score regex should NOT include `:` as separator (`:` is only for clocks like `89:10`). Use `-` only for dash-separated format.
+- When multiple space-separated number pairs exist (e.g., "9:34" parsed as "9 34"), filter by checking adjacency to clock markers (`:` or `.` nearby).
+- Decimal clock formats like "49.8" (basketball quarter time) must be added to clock regex: `\b\d{1,2}\.\d{1,2}\b(?!\d)`.
+- Treat `plan.md` as mandatory operating workflow for all non-trivial work, including verification and re-planning.
+- Keep `tasks/todo.md` current as the live execution checklist; update it before coding and while coding.
+- After every user correction or process reminder, immediately record the prevention rule in this file before proceeding.
+- Keep all file operations strictly inside workspace project folders (root and `fair_scan_ai`); treat VS Code chat session artifacts under AppData as read-only diagnostics, never as project files.
