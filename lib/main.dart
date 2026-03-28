@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'core/theme/app_theme.dart';
-import 'login_view.dart'; // Make sure this file exists in /lib
+import 'login_page.dart';
+import 'stream_monitor_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Load .env file - optional for local dev
   try {
-    // Load .env from current directory
-    await dotenv.load();
-  } catch (e) {
-    debugPrint('dotenv.load() failed: $e');
-    // Cloud Vision is optional in local dev; ML Kit path can still run.
+    await dotenv.load(fileName: '.env');
+  } catch (_) {
+    // .env file not found - this is okay for development
+    // The app will work with default/hardcoded values
   }
 
   runApp(const RightsGuardApp());
@@ -25,7 +26,7 @@ class RightsGuardApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'FairScan AI', // Updated Title
+      title: 'ApexVerify',
       theme: ThemeData(
         useMaterial3: true,
         colorSchemeSeed: AppColors.primaryBrand,
@@ -34,8 +35,11 @@ class RightsGuardApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: AppColors.background,
       ),
-      // Starts the app at the login screen
-      home: const LoginView(), 
+      // Start with login page
+      home: const LoginPage(),
+      routes: {
+        '/monitor': (_) => const StreamMonitorScreen(),
+      },
     );
   }
 }
